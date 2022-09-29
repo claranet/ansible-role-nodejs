@@ -56,8 +56,8 @@ N/A
         version: "1.1.3"
       enzyme:
         state: absent
-    proxy_settings_https_proxy: "https://proxy:3128"
-    proxy_settings_http_proxy: "https://proxy:3128"
+    nodejs_proxy_settings_https_proxy: "https://proxy:3128"
+    nodejs_proxy_settings_http_proxy: "https://proxy:3128"
   roles:
     - claranet.nodejs
 ```
