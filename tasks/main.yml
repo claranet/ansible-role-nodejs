@@ -1,22 +1,4 @@
 ---
-- name: Verify needed vars are present
-  ansible.builtin.validate_argument_spec:
-    argument_spec: '{{ required_data }}'
-  vars:
-    required_data:
-      nodejs_version:
-        description: Version of nodejs to be installed
-        type: str
-        required: true
-      proxy_settings_http_proxy:
-        description: HTTP Proxy to be used
-        type: str
-        required: false
-      proxy_settings_https_proxy:
-        description: HTTPS Proxy to be used
-        type: str
-        required: false
-
 - name: Gather OS specific variables
   ansible.builtin.include_vars: "{{ loop_vars }}"
   loop: "{{ query('ansible.builtin.first_found', params) }}"
@@ -42,12 +24,12 @@
   when: nodejs_version != _nodejs_version_short and (ansible_distro == "ubuntu" or ansible_distro == "debian")
 
 - name: NodeJS | NPM | Configure HTTP proxy
-  ansible.builtin.command: npm config set proxy {{ proxy_settings_http_proxy }}
-  when: proxy_settings_http_proxy is defined
+  ansible.builtin.command: npm config set proxy {{ nodejs_proxy_settings_http_proxy }}
+  when: nodejs_proxy_settings_http_proxy is defined
 
 - name: NodeJS | NPM | Configure HTTPS proxy
-  ansible.builtin.command: npm config set https-proxy {{ proxy_settings_https_proxy }}
-  when: proxy_settings_https_proxy is defined
+  ansible.builtin.command: npm config set https-proxy {{ nodejs_proxy_settings_https_proxy }}
+  when: nodejs_proxy_settings_https_proxy is defined
 
 - name: npm | install/uninstall
   community.general.npm:

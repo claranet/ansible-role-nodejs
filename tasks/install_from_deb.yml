@@ -32,7 +32,7 @@
     url: https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/pool/main/n/nodejs/{{ nodejs_deb_list_[0] }}
     dest: /var/cache/ansible-role-nodejs/{{ nodejs_deb_list_[0] }}
     mode: 0644
-  when: proxy_settings_http_proxy is not defined and proxy_settings_https_proxy is not defined
+  when: nodejs_proxy_settings_http_proxy is not defined and nodejs_proxy_settings_https_proxy is not defined
 
 - name: deb | download /var/cache/ansible-role-nodejs/node_…deb
   ansible.builtin.get_url:
@@ -41,9 +41,9 @@
     use_proxy: true
     mode: 0644
   environment:
-    http_proxy: "{{ proxy_settings_http_proxy | default('') }}"
-    https_proxy: "{{ proxy_settings_https_proxy | default('') }}"
-  when: proxy_settings_http_proxy is defined or proxy_settings_https_proxy is defined
+    http_proxy: "{{ nodejs_proxy_settings_http_proxy | default('') }}"
+    https_proxy: "{{ nodejs_proxy_settings_https_proxy | default('') }}"
+  when: nodejs_proxy_settings_http_proxy is defined or nodejs_proxy_settings_https_proxy is defined
 
 - name: deb | install nodejs
   ansible.builtin.apt:

@@ -2,7 +2,7 @@
 - name: Converge
   hosts: all
   vars:
-    proxy_settings_http_proxy: "https://monproxy:3128"
+    nodejs_proxy_settings_http_proxy: "https://monproxy:3128"
     nodejs_version: "16.17.1-deb-1nodesource1"
     nodejs_npm:
       coffeescript: {}
