@@ -14,11 +14,11 @@
 
 - name: repo | /etc/apt/sources.list.d/nodesource.list
   ansible.builtin.apt_repository:
-    repo: "deb https://deb.nodesource.com/node_{{ nodejs_version_short }}.x {{ ansible_distribution_release }} main"
+    repo: "deb https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x {{ ansible_distribution_release }} main"
     filename: nodesource
   when: not nodejs_repository_debian
 
 - name: repo | install nodejs
   ansible.builtin.apt:
-    name: nodejs={{ nodejs_version_short }}*
+    name: nodejs={{ _nodejs_version_short }}*
     force: "{{ nodejs_force_install }}"

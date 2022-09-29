@@ -23,9 +23,20 @@ ansible-galaxy install claranet.nodejs
 
 ## :gear: Role variables
 
-Variable       | Default value | Description
----------------|---------------|------------
-nodejs_version | **null**      | version of nodejs to install. It can be short : "16" ou long : "16.11"
+Variable                   | Default value | Required | Description
+---------------------------|---------------|----------|---------------------------------------------------------------------
+nodejs_version             | **null**      | true     | version of nodejs to install. It can be short : "16" or long : "16.11" (or 16.17.1-deb-1nodesource1)
+nodejs_npm                 | **null**      | false    | list of npm packages to install
+nodejs_repository_debian   | **false**     | false    | Whether to use the Debian repository or not
+proxy_settings_https_proxy | **null**      | false    | proxy to use to get https links. Ex: https://proxy:3128
+proxy_settings_http_proxy  | **null**      | false    | proxy to use to get http links. Ex: https://proxy:3128
+
+If using the short nodejs_version (ex: 16), it will use the NodeSource repository.
+
+If using the short nodejs_version (ex: 16) AND nodejs_repository_debian is true, it will use the Debian Repository.
+
+If using the long nodejs version, it will download the package from NodeSource and install it with dpkg (not all packages are available directly from the repository).
+
 
 ## :arrows_counterclockwise: Dependencies
 

@@ -36,10 +36,10 @@
     loop_var: loop_vars
 
 - import_tasks: install_from_repo.yml
-  when: nodejs_version == nodejs_version_short and (ansible_distro == "ubuntu" or ansible_distro == "debian")
+  when: nodejs_version == _nodejs_version_short and (ansible_distro == "ubuntu" or ansible_distro == "debian")
 
 - import_tasks: install_from_deb.yml
-  when: nodejs_version != nodejs_version_short and (ansible_distro == "ubuntu" or ansible_distro == "debian")
+  when: nodejs_version != _nodejs_version_short and (ansible_distro == "ubuntu" or ansible_distro == "debian")
 
 - name: NodeJS | NPM | Configure HTTP proxy
   ansible.builtin.command: npm config set proxy {{ proxy_settings_http_proxy }}

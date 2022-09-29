@@ -2,7 +2,7 @@
 # https://github.com/nodesource/distributions/issues/33#issuecomment-169345680
 - name: deb | get version matching nodejs_version
   ansible.builtin.set_fact:
-    nodejs_deb_list_: "{{ lookup('url', 'https://deb.nodesource.com/node_' ~ nodejs_version_short ~ '.x/pool/main/n/nodejs/', split_lines=False) | regex_findall('(?<=>)nodejs_' ~ nodejs_version ~ '[^<]*_amd64.deb') }}"  # noqa 204
+    nodejs_deb_list_: "{{ lookup('url', 'https://deb.nodesource.com/node_' ~ _nodejs_version_short ~ '.x/pool/main/n/nodejs/', split_lines=False) | regex_findall('(?<=>)nodejs_' ~ nodejs_version ~ '[^<]*_amd64.deb') }}"  # noqa 204
 
 - name: deb | fail if no version match
   ansible.builtin.fail:
@@ -29,14 +29,14 @@
 
 - name: deb | download /var/cache/ansible-role-nodejs/node_…deb
   ansible.builtin.get_url:
-    url: https://deb.nodesource.com/node_{{ nodejs_version_short }}.x/pool/main/n/nodejs/{{ nodejs_deb_list_[0] }}
+    url: https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/pool/main/n/nodejs/{{ nodejs_deb_list_[0] }}
     dest: /var/cache/ansible-role-nodejs/{{ nodejs_deb_list_[0] }}
     mode: 0644
   when: proxy_settings_http_proxy is not defined and proxy_settings_https_proxy is not defined
 
 - name: deb | download /var/cache/ansible-role-nodejs/node_…deb
   ansible.builtin.get_url:
-    url: https://deb.nodesource.com/node_{{ nodejs_version_short }}.x/pool/main/n/nodejs/{{ nodejs_deb_list_[0] }}
+    url: https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/pool/main/n/nodejs/{{ nodejs_deb_list_[0] }}
     dest: /var/cache/ansible-role-nodejs/{{ nodejs_deb_list_[0] }}
     use_proxy: true
     mode: 0644
