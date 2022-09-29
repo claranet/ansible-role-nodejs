@@ -1,0 +1,66 @@
+---
+- name: Verify needed vars are present
+  ansible.builtin.validate_argument_spec:
+    argument_spec: '{{ required_data }}'
+  vars:
+    required_data:
+      nodejs_version:
+        description: Version of nodejs to be installed
+        type: str
+        required: true
+      proxy_settings_http_proxy:
+        description: HTTP Proxy to be used
+        type: str
+        required: false
+      proxy_settings_https_proxy:
+        description: HTTPS Proxy to be used
+        type: str
+        required: false
+
+- name: Gather OS specific variables
+  ansible.builtin.include_vars: "{{ loop_vars }}"
+  loop: "{{ query('ansible.builtin.first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distro }}-{{ ansible_distro_version }}.yml"
+        - "{{ ansible_distro }}-{{ ansible_distro_release }}.yml"
+        - "{{ ansible_distro }}-{{ ansible_distro_major_version }}.yml"
+        - "{{ ansible_distro }}.yml"
+        - "{{ ansible_os_family | lower }}-family.yml"
+        - "{{ ansible_system | lower }}.yml"
+      paths:
+        - "vars"
+      skip: true
+  loop_control:
+    loop_var: loop_vars
+
+- import_tasks: install_from_repo.yml
+  when: nodejs_version == nodejs_version_short and (ansible_distro == "ubuntu" or ansible_distro == "debian")
+
+- import_tasks: install_from_deb.yml
+  when: nodejs_version != nodejs_version_short and (ansible_distro == "ubuntu" or ansible_distro == "debian")
+
+- name: NodeJS | NPM | Configure HTTP proxy
+  ansible.builtin.command: npm config set proxy {{ proxy_settings_http_proxy }}
+  when: proxy_settings_http_proxy is defined
+
+- name: NodeJS | NPM | Configure HTTPS proxy
+  ansible.builtin.command: npm config set https-proxy {{ proxy_settings_https_proxy }}
+  when: proxy_settings_https_proxy is defined
+
+- name: npm | install/uninstall
+  community.general.npm:
+    name: "{{ item.key }}"
+    global: true
+    ignore_scripts: "{{ nodejs_npm_.ignore_scripts }}"
+    production: "{{ nodejs_npm_.production }}"
+    registry: "{{ nodejs_npm_.registry }}"
+    unsafe_perm: "{{ nodejs_npm_.unsafe_perm }}"
+    version: "{{ nodejs_npm_.version }}"
+    state: "{{ nodejs_npm_.state }}"
+  vars:
+    nodejs_npm_: "{{ nodejs_npm_default | combine(item.value) }}"
+  loop: "{{ nodejs_npm | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"

@@ -1,0 +1,22 @@
+galaxy_info:
+  role_name: "nodejs"
+  namespace: "claranet"
+  description: "Install and configure NodeJS"
+  author: "Claranet"
+  company: "Claranet France"
+
+  license: "MPL2"
+
+  min_ansible_version: "5"
+
+  galaxy_tags: ['claranet', 'nodejs']
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+dependencies: []

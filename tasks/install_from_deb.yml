@@ -1,0 +1,51 @@
+---
+# https://github.com/nodesource/distributions/issues/33#issuecomment-169345680
+- name: deb | get version matching nodejs_version
+  ansible.builtin.set_fact:
+    nodejs_deb_list_: "{{ lookup('url', 'https://deb.nodesource.com/node_' ~ nodejs_version_short ~ '.x/pool/main/n/nodejs/', split_lines=False) | regex_findall('(?<=>)nodejs_' ~ nodejs_version ~ '[^<]*_amd64.deb') }}"  # noqa 204
+
+- name: deb | fail if no version match
+  ansible.builtin.fail:
+    msg: |-
+      No version match your `nodejs_version` variable.
+  when: not nodejs_deb_list_
+
+- name: deb | fail if multiple version match
+  ansible.builtin.fail:
+    msg: >-
+      Multiple version match your `nodejs_version` variable.
+      Select one from:
+      [{%- for nodejs_deb_ in nodejs_deb_list_ -%}
+      {{ nodejs_deb_[7:] | replace('_amd64.deb', '') }}{% if not loop.last %}, {% endif -%}
+      {% endfor -%}
+      ]
+  when: nodejs_deb_list_ | length > 1
+
+- name: deb | /var/cache/ansible-role-nodejs/
+  ansible.builtin.file:
+    path: /var/cache/ansible-role-nodejs
+    state: directory
+    mode: 0755
+
+- name: deb | download /var/cache/ansible-role-nodejs/node_…deb
+  ansible.builtin.get_url:
+    url: https://deb.nodesource.com/node_{{ nodejs_version_short }}.x/pool/main/n/nodejs/{{ nodejs_deb_list_[0] }}
+    dest: /var/cache/ansible-role-nodejs/{{ nodejs_deb_list_[0] }}
+    mode: 0644
+  when: proxy_settings_http_proxy is not defined and proxy_settings_https_proxy is not defined
+
+- name: deb | download /var/cache/ansible-role-nodejs/node_…deb
+  ansible.builtin.get_url:
+    url: https://deb.nodesource.com/node_{{ nodejs_version_short }}.x/pool/main/n/nodejs/{{ nodejs_deb_list_[0] }}
+    dest: /var/cache/ansible-role-nodejs/{{ nodejs_deb_list_[0] }}
+    use_proxy: true
+    mode: 0644
+  environment:
+    http_proxy: "{{ proxy_settings_http_proxy | default('') }}"
+    https_proxy: "{{ proxy_settings_https_proxy | default('') }}"
+  when: proxy_settings_http_proxy is defined or proxy_settings_https_proxy is defined
+
+- name: deb | install nodejs
+  ansible.builtin.apt:
+    deb: /var/cache/ansible-role-nodejs/{{ nodejs_deb_list_[0] }}
+    force: "{{ nodejs_force_install }}"

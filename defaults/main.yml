@@ -1,0 +1,14 @@
+---
+# defaults file for role
+# nodejs_version: "…"
+nodejs_force_install: false
+nodejs_repository_debian: false
+
+nodejs_npm: {}
+nodejs_npm_default:
+  ignore_scripts: false
+  production: true
+  registry: "{{ omit }}"
+  unsafe_perm: false
+  version: "{{ omit }}"
+  state: present
