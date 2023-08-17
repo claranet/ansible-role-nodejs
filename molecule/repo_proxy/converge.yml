@@ -1,7 +1,0 @@
----
-- name: Converge
-  hosts: all
-  vars:
-    nodejs_version: "16"
-  roles:
-    - role: claranet.nodejs
