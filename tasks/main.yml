@@ -17,21 +17,37 @@
   loop_control:
     loop_var: loop_vars
 
-- import_tasks: install_from_repo.yml
-  when: nodejs_version == _nodejs_version_short and (ansible_distro == "ubuntu" or ansible_distro == "debian")
+- name: Install basic packages
+  ansible.builtin.apt:
+    name: "{{ _nodejs_required_packages }}"
+    state: present
+    update_cache: true
 
-- import_tasks: install_from_deb.yml
-  when: nodejs_version != _nodejs_version_short and (ansible_distro == "ubuntu" or ansible_distro == "debian")
+- name: "Install nodejs from repository"
+  ansible.builtin.include_tasks: "install_in_{{ ansible_os_family | lower }}_from_repo.yml"
+  when:
+    - nodejs_version == _nodejs_version_short
+    - nodejs_uses_debian_repository
 
-- name: NodeJS | NPM | Configure HTTP proxy
+- name: "Install nodejs from deb package"
+  ansible.builtin.include_tasks: install_in_{{ ansible_os_family | lower }}_from_deb.yml
+  when:
+    - nodejs_version != _nodejs_version_short
+    - not nodejs_uses_debian_repository
+
+- name: "NodeJS | NPM | Configure HTTP proxy"
   ansible.builtin.command: npm config set proxy {{ nodejs_proxy_settings_http_proxy }}
+  register: _nodejs_set_http_proxy
+  changed_when: _nodejs_set_http_proxy.rc != 0
   when: nodejs_proxy_settings_http_proxy is defined
 
 - name: NodeJS | NPM | Configure HTTPS proxy
   ansible.builtin.command: npm config set https-proxy {{ nodejs_proxy_settings_https_proxy }}
+  register: _nodejs_set_https_proxy
+  changed_when: _nodejs_set_https_proxy.rc != 0
   when: nodejs_proxy_settings_https_proxy is defined
 
-- name: npm | install/uninstall
+- name: Install/uninstall npm packages
   community.general.npm:
     name: "{{ item.key }}"
     global: true
