@@ -2,6 +2,7 @@
 - name: Converge
   hosts: all
   vars:
+    nodejs_uses_debian_repository: true
     nodejs_version: "16"
     nodejs_npm:
       coffeescript: {}
