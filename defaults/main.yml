@@ -2,7 +2,7 @@
 # defaults file for role
 # nodejs_version: "…"
 nodejs_force_install: false
-nodejs_repository_debian: false
+nodejs_uses_debian_repository: false
 
 nodejs_npm: {}
 nodejs_npm_default:
