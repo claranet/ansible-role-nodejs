@@ -10,8 +10,8 @@
     cmd: "gpg --dearmor /usr/share/keyrings/nodesource.gpg.key"
     creates: "/usr/share/keyrings/nodesource.gpg.key.gpg"
     chdir: "/usr/share/keyrings"
-  register: _nodejs_generate_gpt_key
-  changed_when: _nodejs_generate_gpt_key.rc != 0
+  register: _nodejs_generate_gpg_key
+  changed_when: _nodejs_generate_gpg_key.rc != 0
 
 - name: Repo | set nodejs repository file content
   ansible.builtin.set_fact:
