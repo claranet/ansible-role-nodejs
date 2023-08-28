@@ -1,0 +1,4 @@
+_nodejs_required_packages:
+  - apt-transport-https
+  - gpg
+  - ca-certificates
