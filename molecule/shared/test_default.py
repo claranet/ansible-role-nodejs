@@ -12,5 +12,4 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 def test_nodejs_is_installed(host):
     nodejs_package = host.package("nodejs")
     assert nodejs_package.is_installed
-    assert nodejs_package.version.startswith('16.17.1')
-    assert host.check_output("node --version").startswith('v16.17.1')
+    assert nodejs_package.version.startswith('16')

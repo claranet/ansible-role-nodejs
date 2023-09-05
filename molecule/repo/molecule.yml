@@ -1,6 +1,7 @@
 ---
 dependency:
-  name: galaxy
+  name: shell
+  command: python3 -m pip install pytest-testinfra
 
 driver:
   name: docker
@@ -31,8 +32,6 @@ provisioner:
 
 verifier:
   name: testinfra
-  lint:
-    name: flake8
   options:
     verbose: true
     s: true

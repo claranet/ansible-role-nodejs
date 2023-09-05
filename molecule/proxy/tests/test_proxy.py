@@ -9,8 +9,5 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 # have a look at https://testinfra.readthedocs.io/en/latest/modules.html to see the different possible tests
 
 
-def test_nodejs_is_installed(host):
-    nodejs_package = host.package("nodejs")
-    assert nodejs_package.is_installed
-    assert nodejs_package.version.startswith('16.17.1')
-    assert host.check_output("node --version").startswith('v16.17.1')
+def test_proxy_is_configured(host):
+    assert "https://monproxy:3128" in host.check_output("npm config list")
