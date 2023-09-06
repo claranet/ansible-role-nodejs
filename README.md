@@ -27,6 +27,7 @@ Variable                          | Default value | Required | Description
 ----------------------------------|---------------|----------|---------------------------------------------------------------------
 nodejs_version                    | **null**      | true     | version of nodejs to install. It can be short : "16" or long : "16.11" (or 16.17.1-deb-1nodesource1)
 nodejs_npm                        | **null**      | false    | list of npm packages to install
+nodejs_hardware_architecture      | **amd64**     | false    | Hardware plaform when installing nodejs using debian package(default install)
 nodejs_uses_debian_repository     | **false**     | false    | Whether to use the Debian repository or not. It will intall from debian file package by default
 nodejs_proxy_settings_https_proxy | **null**      | false    | proxy to use to get https links. Ex: https://proxy:3128
 nodejs_proxy_settings_http_proxy  | **null**      | false    | proxy to use to get http links. Ex: https://proxy:3128
