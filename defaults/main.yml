@@ -3,6 +3,7 @@
 # nodejs_version: "…"
 nodejs_force_install: false
 nodejs_uses_debian_repository: false
+nodejs_hardware_architecture: "amd64"
 
 nodejs_npm: {}
 nodejs_npm_default:
