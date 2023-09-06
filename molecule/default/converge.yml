@@ -2,7 +2,7 @@
 - name: Converge
   hosts: all
   vars:
-    nodejs_version: "16.17.1-deb-1nodesource1"
+    nodejs_version: "16.17.1"
     nodejs_npm:
       coffeescript: {}
       chance:
