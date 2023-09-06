@@ -2,7 +2,7 @@
 # https://github.com/nodesource/distributions/issues/33#issuecomment-169345680
 - name: Deb | get version matching nodejs_version
   ansible.builtin.set_fact:
-    _nodejs_deb_list: "{{ lookup('url', 'https://deb.nodesource.com/node_' ~ _nodejs_version_short ~ '.x/pool/main/n/nodejs/', split_lines=False) | regex_findall('(?<=>)nodejs_' ~ nodejs_version ~ '[^<]*_amd64.deb') }}"  # noqa 204
+    _nodejs_deb_list: "{{ lookup('url', 'https://deb.nodesource.com/node_' ~ _nodejs_version_short ~ '.x/dists/nodistro/main/binary-' ~ nodejs_hardware_architecture ~ '/Packages', split_lines=False) | regex_findall('Filename: .*' ~ nodejs_version ~ '.*') }}"  # noqa 204
 
 - name: Deb | fail if no version match
   ansible.builtin.fail:
@@ -27,17 +27,22 @@
     state: directory
     mode: 0755
 
+- name: Set node file path to download
+  ansible.builtin.set_fact:
+    _nodejs_file_downloading_path: "{{ _nodejs_deb_list[0] | split(':') | last | replace(' ', '') }}"
+    _nodejs_file_deb_name: "{{ _nodejs_deb_list[0] | split(':') | last | replace(' ', '') | split('/') | last }}"
+
 - name: Deb | download /var/cache/ansible-role-nodejs/node_…deb
   ansible.builtin.get_url:
-    url: https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/pool/main/n/nodejs/{{ _nodejs_deb_list[0] }}
-    dest: /var/cache/ansible-role-nodejs/{{ _nodejs_deb_list[0] }}
+    url: "https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/{{ _nodejs_file_downloading_path }}"
+    dest: /var/cache/ansible-role-nodejs/{{ _nodejs_file_deb_name }}
     mode: 0644
   when: nodejs_proxy_settings_http_proxy is not defined and nodejs_proxy_settings_https_proxy is not defined
 
 - name: Deb | download /var/cache/ansible-role-nodejs/node_…deb
   ansible.builtin.get_url:
-    url: https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/pool/main/n/nodejs/{{ _nodejs_deb_list[0] }}
-    dest: /var/cache/ansible-role-nodejs/{{ _nodejs_deb_list[0] }}
+    url: "https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/{{ _nodejs_file_downloading_path }}"
+    dest: /var/cache/ansible-role-nodejs/{{ _nodejs_file_deb_name }}
     use_proxy: true
     mode: 0644
   environment:
@@ -47,5 +52,5 @@
 
 - name: Deb | install nodejs
   ansible.builtin.apt:
-    deb: /var/cache/ansible-role-nodejs/{{ _nodejs_deb_list[0] }}
+    deb: /var/cache/ansible-role-nodejs/{{ _nodejs_file_deb_name }}
     force: "{{ nodejs_force_install }}"
