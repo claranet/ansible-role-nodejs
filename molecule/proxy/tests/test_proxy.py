@@ -10,4 +10,4 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 
 
 def test_proxy_is_configured(host):
-    assert "https://monproxy:3128" in host.check_output("npm config list")
+    assert "https://monproxy:3128" in host.check_output("npm config ls -l")
