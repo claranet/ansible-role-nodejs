@@ -45,12 +45,35 @@ N/A
 
 ## :pencil2: Example Playbook
 
+* Install using deb files
+
 ```yaml
 ---
-- name: Install NodeJS
+- name: Install NodeJS With deb files
+  hosts: all
+  vars:
+    nodejs_version: "16.17.1"
+    nodejs_npm:
+      coffeescript: {}
+      chance:
+        version: "1.1.3"
+      enzyme:
+        state: absent
+    nodejs_proxy_settings_https_proxy: "https://proxy:3128"
+    nodejs_proxy_settings_http_proxy: "https://proxy:3128"
+  roles:
+    - claranet.nodejs
+```
+
+* Install using apt repository
+
+```yaml
+---
+- name: Install NodeJS With deb files
   hosts: all
   vars:
     nodejs_version: "16"
+    nodejs_uses_debian_repository: true
     nodejs_npm:
       coffeescript: {}
       chance:
