@@ -7,3 +7,7 @@ ansible_distro_major_version: "{{ ansible_distribution_major_version | lower | r
 
 # Var for nodejs
 _nodejs_version_short: '{{ nodejs_version | regex_search("^(\d+)") }}'
+_nodesjs_platform_architecture:
+  x86_64: amd64
+  armv7l: armhf
+  aarch64: arm64

@@ -2,7 +2,7 @@
 # https://github.com/nodesource/distributions/issues/33#issuecomment-169345680
 - name: Deb | get version matching nodejs_version
   ansible.builtin.set_fact:
-    _nodejs_deb_list: "{{ lookup('url', 'https://deb.nodesource.com/node_' ~ _nodejs_version_short ~ '.x/dists/nodistro/main/binary-' ~ _nodejs_hardware_architecture ~ '/Packages', split_lines=False) | regex_findall('Filename: .*' ~ nodejs_version ~ '.*') }}"  # noqa 204
+    _nodejs_deb_list: "{{ lookup('url', 'https://deb.nodesource.com/node_' ~ _nodejs_version_short ~ '.x/dists/nodistro/main/binary-' ~ _nodesjs_platform_architecture[ansible_architecture] ~ '/Packages', split_lines=False) | regex_findall('Filename: .*' ~ nodejs_version ~ '.*') }}"  # noqa 204
 
 - name: Deb | fail if no version match
   ansible.builtin.fail:

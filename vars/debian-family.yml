@@ -2,5 +2,3 @@ _nodejs_required_packages:
   - apt-transport-https
   - gpg
   - ca-certificates
-
-_nodejs_hardware_architecture: "{{ 'amd64' if ansible_architecture == 'x86_64' else 'arm64' }}"
