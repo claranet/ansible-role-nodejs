@@ -2,3 +2,13 @@ _nodejs_required_packages:
   - apt-transport-https
   - gpg
   - ca-certificates
+
+_nodejs_deb_list: "{{ lookup('url', 'https://deb.nodesource.com/node_' ~ _nodejs_version_short ~ '.x/dists/nodistro/main/binary-' ~ _nodesjs_platform_architecture[ansible_architecture] ~ '/Packages', split_lines=False) | regex_findall('Filename: .*' ~ nodejs_version ~ '.*') }}"  # noqa 204
+_nodejs_file_downloading_path: "{{ _nodejs_deb_list[0] | split(':') | last | replace(' ', '') }}"
+_nodejs_file_deb_name: "{{ _nodejs_deb_list[0] | split(':') | last | replace(' ', '') | split('/') | last }}"
+_nodejs_repository_file_content: |
+  Types: deb
+  URIs: https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x
+  Suites: {{ ansible_distribution_release | lower }}
+  Components: main
+  Signed-By: /usr/share/keyrings/nodesource.gpg.key.gpg

@@ -1,9 +1,4 @@
 ---
-# https://github.com/nodesource/distributions/issues/33#issuecomment-169345680
-- name: Deb | get version matching nodejs_version
-  ansible.builtin.set_fact:
-    _nodejs_deb_list: "{{ lookup('url', 'https://deb.nodesource.com/node_' ~ _nodejs_version_short ~ '.x/dists/nodistro/main/binary-' ~ _nodesjs_platform_architecture[ansible_architecture] ~ '/Packages', split_lines=False) | regex_findall('Filename: .*' ~ nodejs_version ~ '.*') }}"  # noqa 204
-
 - name: Deb | fail if no version match
   ansible.builtin.fail:
     msg: |-
@@ -16,7 +11,7 @@
       Multiple version match your `nodejs_version` variable.
       Select one from:
       [{%- for nodejs_deb_ in _nodejs_deb_list -%}
-      {{ nodejs_deb_[7:] | replace('_amd64.deb', '') }}{% if not loop.last %}, {% endif -%}
+      {{ nodejs_deb_[7:] | replace("_" + _nodesjs_platform_architecture[ansible_architecture] + ".deb", '') }}{% if not loop.last %}, {% endif -%}
       {% endfor -%}
       ]
   when: _nodejs_deb_list | length > 1
@@ -26,11 +21,6 @@
     path: /var/cache/ansible-role-nodejs
     state: directory
     mode: 0755
-
-- name: Set node file path to download
-  ansible.builtin.set_fact:
-    _nodejs_file_downloading_path: "{{ _nodejs_deb_list[0] | split(':') | last | replace(' ', '') }}"
-    _nodejs_file_deb_name: "{{ _nodejs_deb_list[0] | split(':') | last | replace(' ', '') | split('/') | last }}"
 
 - name: Deb | download /var/cache/ansible-role-nodejs/node_…deb
   ansible.builtin.get_url:
