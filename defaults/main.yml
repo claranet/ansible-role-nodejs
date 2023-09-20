@@ -11,3 +11,5 @@ nodejs_npm_default:
   unsafe_perm: false
   version: "{{ omit }}"
   state: present
+nodejs_proxy_settings_http_proxy: ''
+nodejs_proxy_settings_https_proxy: ''
