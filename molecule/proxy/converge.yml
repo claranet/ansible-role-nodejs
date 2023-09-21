@@ -3,6 +3,6 @@
   hosts: all
   vars:
     nodejs_proxy_settings_http_proxy: "https://monproxy:3128"
-    nodejs_version: "16.17.1-deb-1nodesource1"
+    nodejs_version: "16.17.1"
   roles:
     - role: claranet.nodejs

@@ -13,15 +13,6 @@
   register: _nodejs_generate_gpg_key
   changed_when: _nodejs_generate_gpg_key.rc != 0
 
-- name: Repo | set nodejs repository file content
-  ansible.builtin.set_fact:
-    _nodejs_repository_file_content: |
-      Types: deb
-      URIs: https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x
-      Suites: {{ ansible_distribution_release | lower }}
-      Components: main
-      Signed-By: /usr/share/keyrings/nodesource.gpg.key.gpg
-
 - name: Repo | create node repository file
   ansible.builtin.copy:
     content: "{{ _nodejs_repository_file_content }}"

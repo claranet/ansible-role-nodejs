@@ -3,7 +3,6 @@
 # nodejs_version: "…"
 nodejs_force_install: false
 nodejs_uses_debian_repository: false
-
 nodejs_npm: {}
 nodejs_npm_default:
   ignore_scripts: false
@@ -12,3 +11,5 @@ nodejs_npm_default:
   unsafe_perm: false
   version: "{{ omit }}"
   state: present
+nodejs_proxy_settings_http_proxy: ''
+nodejs_proxy_settings_https_proxy: ''

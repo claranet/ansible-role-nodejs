@@ -1,9 +1,4 @@
 ---
-# https://github.com/nodesource/distributions/issues/33#issuecomment-169345680
-- name: Deb | get version matching nodejs_version
-  ansible.builtin.set_fact:
-    _nodejs_deb_list: "{{ lookup('url', 'https://deb.nodesource.com/node_' ~ _nodejs_version_short ~ '.x/pool/main/n/nodejs/', split_lines=False) | regex_findall('(?<=>)nodejs_' ~ nodejs_version ~ '[^<]*_amd64.deb') }}"  # noqa 204
-
 - name: Deb | fail if no version match
   ansible.builtin.fail:
     msg: |-
@@ -16,7 +11,7 @@
       Multiple version match your `nodejs_version` variable.
       Select one from:
       [{%- for nodejs_deb_ in _nodejs_deb_list -%}
-      {{ nodejs_deb_[7:] | replace('_amd64.deb', '') }}{% if not loop.last %}, {% endif -%}
+      {{ nodejs_deb_[7:] | replace("_" + _nodesjs_platform_architecture[ansible_architecture] + ".deb", '') }}{% if not loop.last %}, {% endif -%}
       {% endfor -%}
       ]
   when: _nodejs_deb_list | length > 1
@@ -27,25 +22,17 @@
     state: directory
     mode: 0755
 
-- name: Deb | download /var/cache/ansible-role-nodejs/node_…deb
+- name: "Deb | download  https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/{{ _nodejs_file_downloading_path }}"     # noqa name[template]
   ansible.builtin.get_url:
-    url: https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/pool/main/n/nodejs/{{ _nodejs_deb_list[0] }}
-    dest: /var/cache/ansible-role-nodejs/{{ _nodejs_deb_list[0] }}
-    mode: 0644
-  when: nodejs_proxy_settings_http_proxy is not defined and nodejs_proxy_settings_https_proxy is not defined
-
-- name: Deb | download /var/cache/ansible-role-nodejs/node_…deb
-  ansible.builtin.get_url:
-    url: https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/pool/main/n/nodejs/{{ _nodejs_deb_list[0] }}
-    dest: /var/cache/ansible-role-nodejs/{{ _nodejs_deb_list[0] }}
+    url: "https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/{{ _nodejs_file_downloading_path }}"
+    dest: /var/cache/ansible-role-nodejs/{{ _nodejs_file_deb_name }}
     use_proxy: true
     mode: 0644
   environment:
-    http_proxy: "{{ nodejs_proxy_settings_http_proxy | default('') }}"
-    https_proxy: "{{ nodejs_proxy_settings_https_proxy | default('') }}"
-  when: nodejs_proxy_settings_http_proxy is defined or nodejs_proxy_settings_https_proxy is defined
+    http_proxy: "{{ nodejs_proxy_settings_http_proxy }}"
+    https_proxy: "{{ nodejs_proxy_settings_https_proxy }}"
 
 - name: Deb | install nodejs
   ansible.builtin.apt:
-    deb: /var/cache/ansible-role-nodejs/{{ _nodejs_deb_list[0] }}
+    deb: /var/cache/ansible-role-nodejs/{{ _nodejs_file_deb_name }}
     force: "{{ nodejs_force_install }}"

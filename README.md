@@ -25,11 +25,11 @@ ansible-galaxy install claranet.nodejs
 
 Variable                          | Default value | Required | Description
 ----------------------------------|---------------|----------|---------------------------------------------------------------------
-nodejs_version                    | **null**      | true     | version of nodejs to install. It can be short : "16" or long : "16.11" (or 16.17.1-deb-1nodesource1)
-nodejs_npm                        | **null**      | false    | list of npm packages to install
+nodejs_version                    | **undef**     | true     | version of nodejs to install. It can be short : "16" or long : "16.11"
+nodejs_npm                        | **{}**      | false    | list of npm packages to install
 nodejs_uses_debian_repository     | **false**     | false    | Whether to use the Debian repository or not. It will intall from debian file package by default
-nodejs_proxy_settings_https_proxy | **null**      | false    | proxy to use to get https links. Ex: https://proxy:3128
-nodejs_proxy_settings_http_proxy  | **null**      | false    | proxy to use to get http links. Ex: https://proxy:3128
+nodejs_proxy_settings_https_proxy | **''**      | false    | proxy to use to get https links. Ex: https://proxy:3128
+nodejs_proxy_settings_http_proxy  | **''**      | false    | proxy to use to get http links. Ex: https://proxy:3128
 
 If using the short nodejs_version (ex: 16), it will use the NodeSource repository.
 
@@ -44,12 +44,35 @@ N/A
 
 ## :pencil2: Example Playbook
 
+* Install using deb files
+
 ```yaml
 ---
-- name: Install NodeJS
+- name: Install NodeJS With deb files
+  hosts: all
+  vars:
+    nodejs_version: "16.17.1"
+    nodejs_npm:
+      coffeescript: {}
+      chance:
+        version: "1.1.3"
+      enzyme:
+        state: absent
+    nodejs_proxy_settings_https_proxy: "https://proxy:3128"
+    nodejs_proxy_settings_http_proxy: "https://proxy:3128"
+  roles:
+    - claranet.nodejs
+```
+
+* Install using apt repository
+
+```yaml
+---
+- name: Install NodeJS With deb files
   hosts: all
   vars:
     nodejs_version: "16"
+    nodejs_uses_debian_repository: true
     nodejs_npm:
       coffeescript: {}
       chance:
