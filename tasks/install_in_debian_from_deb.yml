@@ -22,7 +22,7 @@
     state: directory
     mode: 0755
 
-- name: Deb | download /var/cache/ansible-role-nodejs/node_…deb
+- name: "Deb | download  https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/{{ _nodejs_file_downloading_path }}"     # noqa name[template]
   ansible.builtin.get_url:
     url: "https://deb.nodesource.com/node_{{ _nodejs_version_short }}.x/{{ _nodejs_file_downloading_path }}"
     dest: /var/cache/ansible-role-nodejs/{{ _nodejs_file_deb_name }}
